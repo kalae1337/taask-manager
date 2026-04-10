@@ -20,7 +20,11 @@ const saveTasks = (tasks) => {
 }
 
 const argv = yargs(hideBin(process.argv))
-.command('add [task]', 'Add a task', () => {}, (argv) => {
+.command(
+    'add <task>', 
+    'Add a task', 
+    () => {}, 
+    (argv) => {
     const tasks = readTasks();
     const newTask = {
         id: tasks.length + 1,
@@ -29,10 +33,13 @@ const argv = yargs(hideBin(process.argv))
     };
     tasks.push(newTask);
     saveTasks(tasks);
-    console.log(argv.task, "task added succesfully!");
+    console.log(`✅ Task ${argv.task} added succesfully!`);
 })
 
-.command('list', 'List all tasks', () => {
+.command(
+    'list',
+    'List all tasks',
+    () => {
     const tasks = readTasks();
     if (tasks.length === 0){
         console.log('No tasks available right now.');
@@ -43,6 +50,31 @@ const argv = yargs(hideBin(process.argv))
         console.log(`${task.id}. ${task.description} - ${task.completed ? 'Completed' : 'Not Completed'}`);
     });
 })
+
+.command(
+    'complete <id>', //required argument
+    'Mark a task as complete',
+    (yargs) => {
+        return yargs.positional('id', {
+            type: 'number',
+            describe: 'The ID of the task to complete'
+        });
+    },
+    (argv) => {
+        const tasks = readTasks();
+        const task = tasks.find(t => t.id === argv.id);
+
+        if (!task) {
+            
+            console.error(`Error: Task with ID ${argv.id} not found.`);
+            process.exit(1); 
+        }
+
+        task.completed = true;
+        saveTasks(tasks);
+        console.log(`✅ Task ${argv.id} marked as completed!`);
+    }
+)
 
 .parse();
 
