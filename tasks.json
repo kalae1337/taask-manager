@@ -4,11 +4,6 @@
     "completed": true
   },
   {
-    "id": 2,
-    "description": "miau",
-    "completed": false
-  },
-  {
     "id": 3,
     "description": "shop",
     "completed": false

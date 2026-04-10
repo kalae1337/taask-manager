@@ -33,7 +33,7 @@ const argv = yargs(hideBin(process.argv))
     };
     tasks.push(newTask);
     saveTasks(tasks);
-    console.log(`✅ Task ${argv.task} added succesfully!`);
+    console.log(`Task ${argv.task} added succesfully!`);
 })
 
 .command(
@@ -72,58 +72,30 @@ const argv = yargs(hideBin(process.argv))
 
         task.completed = true;
         saveTasks(tasks);
-        console.log(`✅ Task ${argv.id} marked as completed!`);
+        console.log(` Task ${argv.id} marked as completed!`);
+    }
+)
+
+.command(
+    'remove <id>',
+    'Remove a task by ID',
+    (yargs) => {
+        return yargs.positional('id', {
+            type: 'number',
+            describe: 'The ID of the task to remove'
+        });
+    },
+    (argv) => {
+        const tasks = readTasks();
+        const updatedTasks = tasks.filter(t => t.id !== argv.id);
+        if (updatedTasks.length === tasks.length) {
+            console.log('Task not found!');
+            return;
+        }
+        saveTasks(updatedTasks);
+        console.log(`Task ${argv.id} removed successfully!`);
     }
 )
 
 .parse();
 
-
-
-// yargs().command({
-//     command: 'complete',
-//     describe: 'Mark a task as completed',
-//     builder: {
-//         id: {
-//             describe: 'Task ID to mark as completed',
-//             demandOption: true,
-//             type: 'number'
-//         }
-//     },
-//     handler(argv) {
-//         const tasks = readTasks();
-//         const task = tasks.find((task) => task.id === argv.id);
-//         if (!task) {
-//             console.log('Task not found!');
-//             return;
-//         }
-//         task.completed = true;
-//         saveTasks(tasks);
-//         console.log(`Task ${argv.id} marked as completed!`);
-//     }
-// });
-
-// yargs().command({
-//     command: 'remove',
-//     describe: 'Remove a task',
-//     builder: {
-//         id: {
-//             describe: 'Task ID to remove',
-//             demandOption: true,
-//             type: 'number'
-//         }
-//     },
-//     handler(argv) {
-//         const tasks = readTasks();
-//         const updatedTasks = tasks.filter((task) => task.id !== argv.id);
-//         if (updatedTasks.length === tasks.length) {
-//             console.log('Task not found!');
-//             return;
-//         }
-//         saveTasks(updatedTasks);
-//         console.log(`Task ${argv.id} removed successfully!`);
-//     }
-// });
-
-
-// yargs().parse();
